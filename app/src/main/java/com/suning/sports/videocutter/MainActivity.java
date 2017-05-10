@@ -1,6 +1,9 @@
 package com.suning.sports.videocutter;
 
+import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -20,10 +23,11 @@ public class MainActivity extends AppCompatActivity {
 
     // Used to load the 'native-lib' library on application startup.
     static {
+        System.loadLibrary("ffmpeg");
         System.loadLibrary("native-lib");
     }
-
-    int clip_stats =0;
+//    int clip_stats =0;
+    String inFile,outFile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,14 +54,18 @@ public class MainActivity extends AppCompatActivity {
         recbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (0 ==clip_stats) {
-                    ffmpeg_clip_setPostion();
-                    clip_stats = 1;
-                } else {
-                    ffmpeg_clip_setPostion();
-                    clip_stats = 0;
-                    ffmpeg_clip_do();
+                if ((null != inFile)) {
+                    outFile = inFile+".clip";
+                    ffmpeg_clip_do(10d, 20d, inFile, outFile);
                 }
+//                if (0 ==clip_stats) {
+//                    ffmpeg_clip_setPostion();
+//                    clip_stats = 1;
+//                } else {
+//                    ffmpeg_clip_setPostion();
+//                    clip_stats = 0;
+//                    ffmpeg_clip_do();
+//                }
             }
         });
 
@@ -69,12 +77,39 @@ public class MainActivity extends AppCompatActivity {
         tv.setTextColor(android.R.color.holo_red_light);
     }
 
+    /**
+     * URI->path
+     */
+    public static String getRealFilePath(final Context context, final Uri uri ) {
+        if ( null == uri ) return null;
+        final String scheme = uri.getScheme();
+        String data = null;
+        if ( scheme == null )
+            data = uri.getPath();
+        else if ( ContentResolver.SCHEME_FILE.equals( scheme ) ) {
+            data = uri.getPath();
+        } else if ( ContentResolver.SCHEME_CONTENT.equals( scheme ) ) {
+            Cursor cursor = context.getContentResolver().query( uri, new String[] { MediaStore.Images.ImageColumns.DATA }, null, null, null );
+            if ( null != cursor ) {
+                if ( cursor.moveToFirst() ) {
+                    int index = cursor.getColumnIndex( MediaStore.Images.ImageColumns.DATA );
+                    if ( index > -1 ) {
+                        data = cursor.getString( index );
+                    }
+                }
+                cursor.close();
+            }
+        }
+        return data;
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 100 && resultCode == RESULT_OK) {
             Uri uri = data.getData();
             if (uri != null) {
+                inFile = getRealFilePath(this,uri);
                 VideoView videoView = (VideoView) findViewById(R.id.videoView);
                 videoView.setVideoURI(uri);
                 videoView.start();
@@ -108,9 +143,9 @@ public class MainActivity extends AppCompatActivity {
      * A native method that is implemented by the 'native-lib' native library,
      * which is packaged with this application.
      */
-    public native String stringFromJNI();
 
     public native String ffmpegInit();
     public native int ffmpeg_clip_setPostion();
-    public native int ffmpeg_clip_do();
+    public native int ffmpeg_clip_do(Double startTime, Double endTime,  String inFile, String outFile);
+    public native int ffmpeg_donothing(String unUsed);
 }

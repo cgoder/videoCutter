@@ -19,6 +19,17 @@ add_library( # Sets the name of the library.
              # Provides a relative path to your source file(s).
              src/main/cpp/native-lib.cpp )
 
+#set(CMAKE_CXX_FLAGS "-D__STDC_FORMAT_MACROS")
+
+add_library( ffmpeg
+             SHARED
+             IMPORTED )
+set_target_properties( ffmpeg
+                       PROPERTIES IMPORTED_LOCATION
+                       ${CMAKE_SOURCE_DIR}/src/main/jniLibs/${ANDROID_ABI}/libffmpeg.so )
+
+include_directories(${CMAKE_SOURCE_DIR}/src/main/jniLibs/include)
+
 # Searches for a specified prebuilt library and stores the path as a
 # variable. Because CMake includes system libraries in the search path by
 # default, you only need to specify the name of the public NDK library
@@ -38,6 +49,7 @@ find_library( # Sets the name of the path variable.
 
 target_link_libraries( # Specifies the target library.
                        native-lib
+                       ffmpeg
 
                        # Links the target library to the log library
                        # included in the NDK.
