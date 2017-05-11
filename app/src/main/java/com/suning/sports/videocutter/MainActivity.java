@@ -55,26 +55,27 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if ((null != inFile)) {
-                    outFile = inFile+".clip";
+//                    outFile = inFile+".mp4";
+                    outFile = "/storage/emulated/0/clip.mp4";
                     ffmpeg_clip_do(10d, 20d, inFile, outFile);
                 }
-//                if (0 ==clip_stats) {
-//                    ffmpeg_clip_setPostion();
-//                    clip_stats = 1;
-//                } else {
-//                    ffmpeg_clip_setPostion();
-//                    clip_stats = 0;
-//                    ffmpeg_clip_do();
-//                }
+            }
+        });
+
+        FloatingActionButton remuxbutton = (FloatingActionButton) findViewById(R.id.remuxbutton);
+        remuxbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if ((null != inFile)) {
+//                    outFile = inFile+".flv";
+                    outFile = "/storage/emulated/0/remux.flv";
+                    ffmpeg_remux_do(inFile, outFile);
+                }
             }
         });
 
         ffmpegInit();
 
-        // Example of a call to a native method
-        TextView tv = (TextView) findViewById(R.id.sample_text);
-        tv.setText("Please select video play!");
-        tv.setTextColor(android.R.color.holo_red_light);
     }
 
     /**
@@ -145,7 +146,6 @@ public class MainActivity extends AppCompatActivity {
      */
 
     public native String ffmpegInit();
-    public native int ffmpeg_clip_setPostion();
     public native int ffmpeg_clip_do(double startTime, double endTime,  String inFile, String outFile);
-    public native int ffmpeg_donothing(String unUsed);
+    public native int ffmpeg_remux_do(String inFile, String outFile);
 }
