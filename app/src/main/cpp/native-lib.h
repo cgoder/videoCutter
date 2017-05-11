@@ -38,15 +38,11 @@ Java_com_suning_sports_videocutter_MainActivity_ffmpeg_1clip_1do(JNIEnv *env, jo
 JNIEXPORT jstring JNICALL
 Java_com_suning_sports_videocutter_MainActivity_ffmpegInit(JNIEnv *env, jobject instance);
 
-JNIEXPORT jint JNICALL
-Java_com_suning_sports_videocutter_MainActivity_ffmpeg_1clip_1setPostion(JNIEnv *env,
-                                                                         jobject instance);
-
 
 JNIEXPORT jint JNICALL
-Java_com_suning_sports_videocutter_MainActivity_ffmpeg_1donothing(JNIEnv *env, jobject instance,
-                                                                  jstring unUsed_);
-
+Java_com_suning_sports_videocutter_MainActivity_ffmpeg_1remux_1do(JNIEnv *env, jobject instance,
+                                                                  jstring inFile_,
+                                                                  jstring outFile_);
 
 }
 
