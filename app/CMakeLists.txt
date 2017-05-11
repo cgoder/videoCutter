@@ -17,9 +17,7 @@ add_library( # Sets the name of the library.
              SHARED
 
              # Provides a relative path to your source file(s).
-             src/main/cpp/native-lib.cpp )
-
-#set(CMAKE_CXX_FLAGS "-D__STDC_FORMAT_MACROS")
+             ${CMAKE_SOURCE_DIR}/src/main/cpp/native-lib.cpp )
 
 add_library( ffmpeg
              SHARED
