@@ -146,6 +146,6 @@ public class MainActivity extends AppCompatActivity {
 
     public native String ffmpegInit();
     public native int ffmpeg_clip_setPostion();
-    public native int ffmpeg_clip_do(Double startTime, Double endTime,  String inFile, String outFile);
+    public native int ffmpeg_clip_do(double startTime, double endTime,  String inFile, String outFile);
     public native int ffmpeg_donothing(String unUsed);
 }
